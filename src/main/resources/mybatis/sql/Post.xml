@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="me.soungho.BlogAPIServer.mvc.repository.PostRepository">
+
+	<select id="getList"
+		parameterType="me.soungho.BlogAPIServer.mvc.domain.Post"
+		resultType="me.soungho.BlogAPIServer.mvc.domain.Post">
+		SELECT
+		P.POST_SEQ,
+		P.TITLE,
+		P.USER,
+		P.CONTENTS,
+		P.REG_DATE
+		FROM T_POST P
+		ORDER BY P.REG_DATE DESC
+	</select>
+
+	<select id="get" parameterType="int"
+		resultType="me.soungho.BlogAPIServer.mvc.domain.Post">
+		SELECT
+		P.POST_SEQ,
+		P.TITLE,
+		P.USER,
+		P.CONTENTS,
+		P.REG_DATE
+		FROM T_POST P
+		WHERE P.POST_SEQ = #{postSeq}
+	</select>
+
+	<insert id="save"
+		parameterType="me.soungho.BlogAPIServer.mvc.domain.Post"
+		useGeneratedKeys="true" keyProperty="postSeq">
+		INSERT INTO T_POST
+		(
+		TITLE,
+		USER,
+		CONTENTS,
+		REG_DATE
+		)
+		VALUES
+		(
+		#{title},
+		#{user},
+		#{contents},
+		NOW()
+		)
+	</insert>
+
+	<update id="update"
+		parameterType="me.soungho.BlogAPIServer.mvc.domain.Post">
+		UPDATE T_POST
+		SET
+		TITLE = #{title},
+		USER = #{user},
+		CONTENTS = #{contents}
+		WHERE POST_SEQ = #{postSeq}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM T_POST
+		WHERE
+		POST_SEQ = #{postSeq}
+	</delete>
+
+
+</mapper>
+
