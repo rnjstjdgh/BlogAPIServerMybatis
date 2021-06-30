@@ -13,4 +13,6 @@ public class Post {
 	private String user;		//작성자
 	private String contents;	//내용
 	private Date regDate;		//등록일자
+	
+
 }

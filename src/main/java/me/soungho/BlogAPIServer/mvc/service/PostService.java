@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import me.soungho.BlogAPIServer.CustomException.PostValidationException;
 import me.soungho.BlogAPIServer.mvc.domain.Post;
 import me.soungho.BlogAPIServer.mvc.repository.PostRepository;
 
@@ -17,11 +18,6 @@ import me.soungho.BlogAPIServer.mvc.repository.PostRepository;
 @Service
 public class PostService {
 	
-	public class PostValidationException extends RuntimeException{
-		PostValidationException(String msg){
-			super(msg);
-		}
-	}
 	
 	@Autowired
 	private PostRepository postRepository;
@@ -54,6 +50,8 @@ public class PostService {
 	 * @return
 	 * **/
 	public int save(Post post) {
+		if(post.getContents() == null || post.getTitle() == null || post.getUser() == null)
+			throw new PostValidationException("Not enough post data.");
 		if(post.getPostSeq() != 0) 
 			throw new PostValidationException("should not send postSeq.");
 		if(post.getRegDate() != null)

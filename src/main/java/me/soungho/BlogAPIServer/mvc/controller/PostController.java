@@ -18,11 +18,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import me.soungho.BlogAPIServer.CustomError.PostError;
 import me.soungho.BlogAPIServer.mvc.domain.Post;
 import me.soungho.BlogAPIServer.mvc.service.PostService;
-import me.soungho.BlogAPIServer.mvc.service.PostService.PostValidationException;
+import me.soungho.BlogAPIServer.CustomException.PostValidationException;
 import org.springframework.http.HttpStatus;
-
 
 /**
  * 게시판 컨트롤러
@@ -69,7 +69,8 @@ public class PostController {
 	 * **/
 	@PostMapping("")
 	@ApiOperation(value = "신규 게시글 등록", 
-	notes = "신규 게시글을 등록합니다. 게시글 등록일 & 게시글 번호는 넘기지 않아야 합니다.")
+	notes = "신규 게시글을 등록합니다. 게시글 등록일 & 게시글 번호는 넘기지 않아야 합니다."
+			+ "{title, user, contents}을 넘겨야 합니다.")
 	public int save(@RequestBody Post post) {
 		return postService.save(post);
 	}
@@ -102,7 +103,7 @@ public class PostController {
 	
 	@ExceptionHandler(PostValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-	private String PostExceptionHandler(PostValidationException ex) {
-		return ex.getMessage();
+	private PostError PostExceptionHandler(PostValidationException ex) {
+		return new PostError(ex.getMessage());
 	}
 }
