@@ -20,8 +20,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.soungho.BlogAPIServer.mvc.domain.Post;
 
-
-//참고: https://tech.devgd.com/12
+/**
+ * spring controller test 참고: https://tech.devgd.com/12
+ * spring boot + test용 h2 db사용 + mybatis 참고: 
+ * 		https://atoz-develop.tistory.com/entry/Spring-Boot-MyBatis-%EC%84%A4%EC%A0%95-%EB%B0%A9%EB%B2%95
+ * 		https://re-coder.tistory.com/5
+ * **/
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PostControllerTest {
@@ -127,12 +131,12 @@ public class PostControllerTest {
 		post.setUser("testUserUpdate");
 		post.setContents("testContentUpdate");
 		jsonPost = objectMapper.writeValueAsString(post);
-		mockMvc.perform(MockMvcRequestBuilders.put("/posts/9")
+		mockMvc.perform(MockMvcRequestBuilders.put("/posts/2")
 				.content(jsonPost)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().string("9"));
+				.andExpect(content().string("2"));
 		
 		// 이상 요청 => regDate를 넘긴 경우
 		post = new Post();
@@ -141,7 +145,7 @@ public class PostControllerTest {
 		post.setContents("testContentUpdate");
 		post.setRegDate(new Date());
 		jsonPost = objectMapper.writeValueAsString(post);
-		mockMvc.perform(MockMvcRequestBuilders.put("/posts/9")
+		mockMvc.perform(MockMvcRequestBuilders.put("/posts/2")
 				.content(jsonPost)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -178,10 +182,10 @@ public class PostControllerTest {
 	@Test
 	public void deleteTest() throws Exception {
 		
-		mockMvc.perform(MockMvcRequestBuilders.delete("/posts/9")
+		mockMvc.perform(MockMvcRequestBuilders.delete("/posts/2")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().string("9"));
+				.andExpect(content().string("2"));
 		
 	}
 }
