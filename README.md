@@ -16,6 +16,7 @@
     * spring security 도입
         * 기본 로그인
         * 소셜 로그인
+            * https://engkimbs.tistory.com/849
 
 2.  검색 기능 
     * 게시글의 제목을 통한 검색
