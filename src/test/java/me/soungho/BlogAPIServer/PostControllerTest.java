@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,6 +35,48 @@ public class PostControllerTest {
 	
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	private String jsonPostNormal;
+	private String jsonPostContentNull;
+	private String jsonPostIncludePostId;
+	private String jsonPostIncludeRegDate;
+
+	@BeforeEach
+	void init() throws Exception {
+		
+		// 정상 요청 => {title, userId, contents}만 넘겼을 때
+		PostDto postDto = PostDto.builder()
+									.title("testTitle")
+									.userId(1)
+									.contents("testContent")
+									.build();
+		jsonPostNormal = objectMapper.writeValueAsString(postDto);
+		
+		// 이상 요청 => content가 null일때
+		postDto = PostDto.builder()
+				.title("testTitle")
+				.userId(1)
+				.build();
+		jsonPostContentNull = objectMapper.writeValueAsString(postDto);
+
+		// 이상 요청 => postId를 넘긴 경우
+		postDto = PostDto.builder()
+				.postId(1)
+				.title("testTitle")
+				.userId(1)
+				.contents("testContent")
+				.build();
+		jsonPostIncludePostId = objectMapper.writeValueAsString(postDto);
+		
+		// 이상 요청 => regDate를 넘긴 경우
+		postDto = PostDto.builder()
+				.title("testTitle")
+				.userId(1)
+				.contents("testContent")
+				.regDate(LocalDateTime.now())
+				.build();
+		jsonPostIncludeRegDate = objectMapper.writeValueAsString(postDto);
+	}
 
 	@Test
 	public void getListTest() throws Exception {
@@ -64,60 +108,32 @@ public class PostControllerTest {
 	
 	@Test
 	public void saveTest() throws Exception{
-		String jsonPost;
-		PostDto postDto;
 		// 정상 요청 => {title, userId, contents}만 넘겼을 때
-		postDto = PostDto.builder()
-							.title("testTitle")
-							.userId(1)
-							.contents("testContent")
-							.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/posts")
-				.content(jsonPost)
+				.content(jsonPostNormal)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 		
 		// 이상 요청 => content가 null일때
-		postDto = PostDto.builder()
-				.title("testTitle")
-				.userId(1)
-				.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/posts")
-				.content(jsonPost)
+				.content(jsonPostContentNull)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string("{\"errorMsg\":\"Not enough post data.\"}"));
 		
 		// 이상 요청 => postId를 넘긴 경우
-		postDto = PostDto.builder()
-				.postId(1)
-				.title("testTitle")
-				.userId(1)
-				.contents("testContent")
-				.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/posts")
-				.content(jsonPost)
+				.content(jsonPostIncludePostId)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string("{\"errorMsg\":\"should not send postId.\"}"));
 		
 		// 이상 요청 => regDate를 넘긴 경우
-
-		postDto = PostDto.builder()
-				.title("testTitle")
-				.userId(1)
-				.contents("testContent")
-				.regDate(LocalDateTime.now())
-				.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/posts")
-				.content(jsonPost)
+				.content(jsonPostIncludeRegDate)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
@@ -126,60 +142,33 @@ public class PostControllerTest {
 	
 	@Test
 	public void updateTest() throws Exception {
-		String jsonPost;
-		PostDto postDto;
 		// 정상 요청		
-		postDto = PostDto.builder()
-				.title("testTitle")
-				.userId(1)
-				.contents("testContent")
-				.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/posts/2")
-				.content(jsonPost)
+				.content(jsonPostNormal)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().string("2"));
 		
 		// 이상 요청 => regDate를 넘긴 경우
-		postDto = PostDto.builder()
-				.title("testTitle")
-				.userId(1)
-				.contents("testContent")
-				.regDate(LocalDateTime.now())
-				.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/posts/2")
-				.content(jsonPost)
+				.content(jsonPostIncludeRegDate)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string("{\"errorMsg\":\"don't need regDate.\"}"));
 
 		// 이상 요청 => post path로 음수를 넘긴 경우
-		postDto = PostDto.builder()
-				.title("testTitle")
-				.userId(1)
-				.contents("testContent")
-				.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/posts/-11")
-				.content(jsonPost)
+				.content(jsonPostNormal)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().string("{\"errorMsg\":\"postId cannot be minus.\"}"));
 		
 		// 이상 요청 => post path로 없는 게시글 번호를 넘긴 경우
-		postDto = PostDto.builder()
-				.title("testTitle")
-				.userId(1)
-				.contents("testContent")
-				.build();
-		jsonPost = objectMapper.writeValueAsString(postDto);
 		mockMvc.perform(MockMvcRequestBuilders.put("/posts/9999")
-				.content(jsonPost)
+				.content(jsonPostNormal)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
