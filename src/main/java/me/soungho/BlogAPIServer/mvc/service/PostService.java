@@ -69,9 +69,11 @@ public class PostService {
 	public int update(Post post) {
 		if(post.getPostSeq() <= 0) 
 			throw new PostValidationException("postSeq cannot be minus.");
+		if(post.getRegDate() !=null)
+			throw new PostValidationException("don't need regDate.");
 		if(postRepository.get(post.getPostSeq()) ==null)
 			throw new PostValidationException("There is no corresponding information for postSeq.");
-
+		
 		postRepository.update(post);		
 		return post.getPostSeq();
 	}

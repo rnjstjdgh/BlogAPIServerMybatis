@@ -121,20 +121,67 @@ public class PostControllerTest {
 	public void updateTest() throws Exception {
 		String jsonPost;
 		Post post;
-		// 정상 요청 => {title, user, contents}만 넘겼을 때
+		// 정상 요청
 		post = new Post();
-		post.setTitle("textTitle");
-		post.setUser("testUser");
-		post.setContents("testContent");
+		post.setTitle("textTitleUpdate");
+		post.setUser("testUserUpdate");
+		post.setContents("testContentUpdate");
 		jsonPost = objectMapper.writeValueAsString(post);
-		mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+		mockMvc.perform(MockMvcRequestBuilders.put("/posts/9")
 				.content(jsonPost)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk());
+				.andExpect(status().isOk())
+				.andExpect(content().string("9"));
 		
+		// 이상 요청 => regDate를 넘긴 경우
+		post = new Post();
+		post.setTitle("textTitleUpdate");
+		post.setUser("testUserUpdate");
+		post.setContents("testContentUpdate");
+		post.setRegDate(new Date());
+		jsonPost = objectMapper.writeValueAsString(post);
+		mockMvc.perform(MockMvcRequestBuilders.put("/posts/9")
+				.content(jsonPost)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().string("{\"errorMsg\":\"don't need regDate.\"}"));
+
+		// 이상 요청 => post path로 음수를 넘긴 경우
+		post = new Post();
+		post.setTitle("textTitleUpdate");
+		post.setUser("testUserUpdate");
+		post.setContents("testContentUpdate");
+		jsonPost = objectMapper.writeValueAsString(post);
+		mockMvc.perform(MockMvcRequestBuilders.put("/posts/-11")
+				.content(jsonPost)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().string("{\"errorMsg\":\"postSeq cannot be minus.\"}"));
+		
+		// 이상 요청 => post path로 없는 게시글 번호를 넘긴 경우
+		post = new Post();
+		post.setTitle("textTitleUpdate");
+		post.setUser("testUserUpdate");
+		post.setContents("testContentUpdate");
+		jsonPost = objectMapper.writeValueAsString(post);
+		mockMvc.perform(MockMvcRequestBuilders.put("/posts/9999")
+				.content(jsonPost)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().string("{\"errorMsg\":\"There is no corresponding information for postSeq.\"}"));
 	}
 	
-	
-	
+	@Test
+	public void deleteTest() throws Exception {
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/posts/9")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().string("9"));
+		
+	}
 }
