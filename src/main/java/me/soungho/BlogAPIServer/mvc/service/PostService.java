@@ -1,13 +1,14 @@
 package me.soungho.BlogAPIServer.mvc.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import me.soungho.BlogAPIServer.CustomException.PostValidationException;
-import me.soungho.BlogAPIServer.mvc.domain.Post;
+import me.soungho.BlogAPIServer.mvc.domain.PostDto;
+import me.soungho.BlogAPIServer.mvc.domain.PostEntity;
 import me.soungho.BlogAPIServer.mvc.repository.PostRepository;
 
 
@@ -26,22 +27,33 @@ public class PostService {
 	 * 전체 게시글 리스트 리턴
 	 * @return
 	 * **/
-	public List<Post> getList(){
-		return postRepository.getList();
+	public List<PostDto> getList(){
+		List<PostEntity> postEntityList = postRepository.getList();
+		List<PostDto> postDtoList = new ArrayList<>();
+		for(PostEntity postEntity : postEntityList)
+			postDtoList.add(this.convertEntityToDto(postEntity));
+        
+		return postDtoList;
 	}
 	
 	/**
-	 * {postSeq}에 해당하는 게시글 리턴
-	 * @param postSeq
+	 * {postId}에 해당하는 게시글 리턴
+	 * @param postId
 	 * @return
 	 * **/
-	public Post get(int postSeq) {
-		if(postSeq < 0)
-			throw new PostValidationException("postSeq cannot be minus.");
-		Post post = postRepository.get(postSeq);
-		if(post == null)
-			throw new PostValidationException("There is no corresponding information for postSeq.");
-		return post;
+	public PostDto get(int postId) {
+		if(postId < 0)
+			throw new PostValidationException("postId cannot be minus.");
+		PostEntity postEntity = postRepository.get(postId);
+		if(postEntity == null)
+			throw new PostValidationException("There is no corresponding information for postId.");
+		return PostDto.builder()
+				.postId(postEntity.getPostId())
+				.title(postEntity.getTitle())
+				.userId(postEntity.getUserId())
+				.contents(postEntity.getContents())
+				.regDate(postEntity.getRegDate())
+				.build();
 	}
 	
 	/**
@@ -49,46 +61,57 @@ public class PostService {
 	 * @param post
 	 * @return
 	 * **/
-	public int save(Post post) {
-		if(post.getContents() == null || post.getTitle() == null || post.getUser() == null)
+	public int save(PostDto postDto) {
+		if(postDto.getContents() == null || postDto.getTitle() == null || postDto.getUserId() == 0)
 			throw new PostValidationException("Not enough post data.");
-		if(post.getPostSeq() != 0) 
-			throw new PostValidationException("should not send postSeq.");
-		if(post.getRegDate() != null)
+		if(postDto.getPostId() != 0) 
+			throw new PostValidationException("should not send postId.");
+		if(postDto.getRegDate() != null)
 			throw new PostValidationException("should not send regDate.");
-		postRepository.save(post);
-		return post.getPostSeq();
+		PostEntity postEntity = postDto.toEntity();
+		postRepository.save(postEntity);
+		return postEntity.getPostId();
 	}
 	
 	
 	/**
-	 * {postSeq}에 해당하는 게시글 수정
-	 * @param postSeq, post
+	 * {postId}에 해당하는 게시글 수정
+	 * @param postId, post
 	 * @return
 	 * **/
-	public int update(Post post) {
-		if(post.getPostSeq() <= 0) 
-			throw new PostValidationException("postSeq cannot be minus.");
-		if(post.getRegDate() !=null)
+	public int update(PostDto postDto) {
+		if(postDto.getPostId() <= 0) 
+			throw new PostValidationException("postId cannot be minus.");
+		if(postDto.getRegDate() !=null)
 			throw new PostValidationException("don't need regDate.");
-		if(postRepository.get(post.getPostSeq()) ==null)
-			throw new PostValidationException("There is no corresponding information for postSeq.");
-		
-		postRepository.update(post);		
-		return post.getPostSeq();
+		if(postRepository.get(postDto.getPostId()) ==null)
+			throw new PostValidationException("There is no corresponding information for postId.");
+		PostEntity postEntity = postDto.toEntity();
+		postRepository.update(postEntity);		
+		return postEntity.getPostId();
 	}
 	
 	/**
-	 * {postSeq}에 해당하는 게시글 삭제
-	 * @param postSeq
+	 * {postId}에 해당하는 게시글 삭제
+	 * @param postId
 	 * @return
 	 * **/
-	public int delete(int postSeq) {
-		if(postSeq <= 0) 
-			throw new PostValidationException("postSeq cannot be minus.");
-		if(postRepository.get(postSeq) ==null)
-			throw new PostValidationException("There is no corresponding information for postSeq.");
-		postRepository.delete(postSeq);
-		return postSeq;
+	public int delete(int postId) {
+		if(postId <= 0) 
+			throw new PostValidationException("postId cannot be minus.");
+		if(postRepository.get(postId) ==null)
+			throw new PostValidationException("There is no corresponding information for postId.");
+		postRepository.delete(postId);
+		return postId;
 	}
+	
+    private PostDto convertEntityToDto(PostEntity postEntity){
+        return PostDto.builder()
+        				.postId(postEntity.getPostId())
+        				.title(postEntity.getTitle())
+        				.userId(postEntity.getUserId())
+        				.contents(postEntity.getContents())
+        				.regDate(postEntity.getRegDate())
+        				.build();
+    }
 }

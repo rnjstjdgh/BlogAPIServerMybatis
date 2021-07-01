@@ -5,12 +5,12 @@
 	namespace="me.soungho.BlogAPIServer.mvc.repository.PostRepository">
 
 	<select id="getList"
-		parameterType="me.soungho.BlogAPIServer.mvc.domain.Post"
-		resultType="me.soungho.BlogAPIServer.mvc.domain.Post">
+		parameterType="me.soungho.BlogAPIServer.mvc.domain.PostEntity"
+		resultType="me.soungho.BlogAPIServer.mvc.domain.PostEntity">
 		SELECT
-		P.POST_SEQ,
+		P.POST_ID,
 		P.TITLE,
-		P.USER,
+		P.USER_ID,
 		P.CONTENTS,
 		P.REG_DATE
 		FROM T_POST P
@@ -18,50 +18,50 @@
 	</select>
 
 	<select id="get" parameterType="int"
-		resultType="me.soungho.BlogAPIServer.mvc.domain.Post">
+		resultType="me.soungho.BlogAPIServer.mvc.domain.PostEntity">
 		SELECT
-		P.POST_SEQ,
+		P.POST_ID,
 		P.TITLE,
-		P.USER,
+		P.USER_ID,
 		P.CONTENTS,
 		P.REG_DATE
 		FROM T_POST P
-		WHERE P.POST_SEQ = #{postSeq}
+		WHERE P.POST_ID = #{postId}
 	</select>
 
 	<insert id="save"
-		parameterType="me.soungho.BlogAPIServer.mvc.domain.Post"
-		useGeneratedKeys="true" keyProperty="postSeq">
+		parameterType="me.soungho.BlogAPIServer.mvc.domain.PostEntity"
+		useGeneratedKeys="true" keyProperty="postId">
 		INSERT INTO T_POST
 		(
 		TITLE,
-		USER,
+		USER_ID,
 		CONTENTS,
 		REG_DATE
 		)
 		VALUES
 		(
 		#{title},
-		#{user},
+		#{userId},
 		#{contents},
 		NOW()
 		)
 	</insert>
 
 	<update id="update"
-		parameterType="me.soungho.BlogAPIServer.mvc.domain.Post">
+		parameterType="me.soungho.BlogAPIServer.mvc.domain.PostEntity">
 		UPDATE T_POST
 		SET
 		TITLE = #{title},
-		USER = #{user},
+		USER_ID = #{userId},
 		CONTENTS = #{contents}
-		WHERE POST_SEQ = #{postSeq}
+		WHERE POST_ID = #{postId}
 	</update>
 
 	<delete id="delete" parameterType="int">
 		DELETE FROM T_POST
 		WHERE
-		POST_SEQ = #{postSeq}
+		POST_ID = #{postId}
 	</delete>
 
 
