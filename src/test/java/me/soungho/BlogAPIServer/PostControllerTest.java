@@ -1,6 +1,7 @@
 package me.soungho.BlogAPIServer;
 
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -90,20 +91,22 @@ public class PostControllerTest {
 		//정상 요청
 		mockMvc.perform(MockMvcRequestBuilders.get("/posts/2").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.postId").value("2"));
+				.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andDo(print())
+				.andExpect(jsonPath("$.data.postId").value("2"));
+
 		
 		//음수 값을 같는 게시글 번호로 요청
 		mockMvc.perform(MockMvcRequestBuilders.get("/posts/-1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$.errorMsg").value("postId cannot be minus."));
+		.andExpect(content().contentType("application/json;charset=UTF-8"))
+		.andExpect(jsonPath("$.msg").value("postId cannot be minus."));
 		
 		//없는 게시글 번호로 요청
 		mockMvc.perform(MockMvcRequestBuilders.get("/posts/99999").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$.errorMsg").value("There is no corresponding information for postId."));
+		.andExpect(content().contentType("application/json;charset=UTF-8"))
+		.andExpect(jsonPath("$.msg").value("There is no corresponding information for postId."));
 	}
 	
 	@Test
@@ -121,7 +124,7 @@ public class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("{\"errorMsg\":\"Not enough post data.\"}"));
+				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"Not enough post data.\"}"));
 		
 		// 이상 요청 => postId를 넘긴 경우
 		mockMvc.perform(MockMvcRequestBuilders.post("/posts")
@@ -129,7 +132,7 @@ public class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("{\"errorMsg\":\"should not send postId.\"}"));
+				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"should not send postId.\"}"));
 		
 		// 이상 요청 => regDate를 넘긴 경우
 		mockMvc.perform(MockMvcRequestBuilders.post("/posts")
@@ -137,7 +140,7 @@ public class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("{\"errorMsg\":\"should not send regDate.\"}"));
+				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"should not send regDate.\"}"));
 	}
 	
 	@Test
@@ -148,7 +151,7 @@ public class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().string("2"));
+				.andExpect(content().string("{\"success\":true,\"code\":0,\"msg\":\"성공하였습니디.\",\"data\":2}"));
 		
 		// 이상 요청 => regDate를 넘긴 경우
 		mockMvc.perform(MockMvcRequestBuilders.put("/posts/2")
@@ -156,7 +159,7 @@ public class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("{\"errorMsg\":\"don't need regDate.\"}"));
+				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"don't need regDate.\"}"));
 
 		// 이상 요청 => post path로 음수를 넘긴 경우
 		mockMvc.perform(MockMvcRequestBuilders.put("/posts/-11")
@@ -164,7 +167,7 @@ public class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("{\"errorMsg\":\"postId cannot be minus.\"}"));
+				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"postId cannot be minus.\"}"));
 		
 		// 이상 요청 => post path로 없는 게시글 번호를 넘긴 경우
 		mockMvc.perform(MockMvcRequestBuilders.put("/posts/9999")
@@ -172,7 +175,7 @@ public class PostControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("{\"errorMsg\":\"There is no corresponding information for postId.\"}"));
+				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"There is no corresponding information for postId.\"}"));
 	}
 	
 	@Test
@@ -181,7 +184,7 @@ public class PostControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.delete("/posts/2")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().string("2"));
+				.andExpect(content().string("{\"success\":true,\"code\":0,\"msg\":\"성공하였습니디.\",\"data\":2}"));
 		
 	}
 }

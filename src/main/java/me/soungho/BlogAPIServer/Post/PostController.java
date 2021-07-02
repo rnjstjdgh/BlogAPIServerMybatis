@@ -1,6 +1,5 @@
 package me.soungho.BlogAPIServer.Post;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,8 +17,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import me.soungho.BlogAPIServer.CustomError.PostError;
 import me.soungho.BlogAPIServer.CustomException.PostValidationException;
+import me.soungho.BlogAPIServer.Response.CommonResult;
+import me.soungho.BlogAPIServer.Response.ListResult;
+import me.soungho.BlogAPIServer.Response.ResponseService;
+import me.soungho.BlogAPIServer.Response.SingleResult;
 
 import org.springframework.http.HttpStatus;
 
@@ -35,6 +37,9 @@ public class PostController {
 	@Autowired
 	private PostService postService;
 	
+	@Autowired
+	private ResponseService responseService;
+	
 	/**
 	 * 전체 게시글 리스트 리턴
 	 * @return
@@ -42,8 +47,8 @@ public class PostController {
 	@GetMapping("")
 	@ApiOperation(value = "게시글 목록 조회", 
 	notes = "전체 게시글 리스트를 반환합니다.")
-	public List<PostDto> getList(){
-		return postService.getList();
+	public ListResult<PostDto> getList(){
+		return responseService.getListResult(postService.getList());
 	}
 	
 	/**
@@ -57,8 +62,8 @@ public class PostController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "postId",value = "게시물 번호", example = "1" )
 	})
-	public PostDto get(@PathVariable int postId) {
-		return postService.get(postId);
+	public SingleResult<PostDto> get(@PathVariable int postId) {
+		return responseService.getSingleResult(postService.get(postId));
 	}
 	
 	/**
@@ -70,8 +75,8 @@ public class PostController {
 	@ApiOperation(value = "신규 게시글 등록", 
 	notes = "신규 게시글을 등록합니다. 게시글 등록일 & 게시글 번호는 넘기지 않아야 합니다."
 			+ "{title, userId, contents}을 넘겨야 합니다.")
-	public int save(@RequestBody PostDto postDto) {
-		return postService.save(postDto);
+	public SingleResult<Integer> save(@RequestBody PostDto postDto) {
+		return responseService.getSingleResult(postService.save(postDto));
 	}
 	
 	/**
@@ -83,9 +88,9 @@ public class PostController {
 	@ApiOperation(value = "기존 게시글 수정", 
 	notes = "기존 게시글을 수정합니다. 게시글 아이디는 path로 넘기고 나머지 정보를 json body로 넘겨야 합니다."
 			+ "게시글 등록 일자는 넘기면 안됩니다.")
-	public int update(@PathVariable int postId, @RequestBody PostDto postDto) {
+	public SingleResult<Integer> update(@PathVariable int postId, @RequestBody PostDto postDto) {
 		postDto.setPostId(postId);
-		return postService.update(postDto);
+		return responseService.getSingleResult(postService.update(postDto));
 	}
 	
 	/**
@@ -96,13 +101,13 @@ public class PostController {
 	@DeleteMapping("/{postId}")
 	@ApiOperation(value = "기존 게시글 삭제", 
 	notes = "기존 게시글을 삭제합니다. path로 삭제하고자 하는 게시글의 번호를 넘겨야 합니다.")
-	public int delete(@PathVariable int postId) {
-		return postService.delete(postId);
+	public SingleResult<Integer> delete(@PathVariable int postId) {
+		return responseService.getSingleResult(postService.delete(postId));
 	}
 	
 	@ExceptionHandler(PostValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-	private PostError PostExceptionHandler(PostValidationException ex) {
-		return new PostError(ex.getMessage());
+	private CommonResult PostExceptionHandler(PostValidationException ex) {
+		return responseService.getFailResult(ex.getMessage());
 	}
 }

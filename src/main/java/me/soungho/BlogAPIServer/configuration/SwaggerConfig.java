@@ -31,7 +31,7 @@ public class SwaggerConfig {
 		ApiSelectorBuilder apis = docket.
 				select().
 				apis(RequestHandlerSelectors.
-						basePackage("me.soungho.BlogAPIServer.mvc.controller"));
+						basePackage("me.soungho.BlogAPIServer"));
 		apis.paths(PathSelectors.ant("/**"));
 		return apis.build();
 	}
