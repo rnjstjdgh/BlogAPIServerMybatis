@@ -10,20 +10,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import me.soungho.BlogAPIServer.CustomException.PostValidationException;
-import me.soungho.BlogAPIServer.Response.CommonResult;
 import me.soungho.BlogAPIServer.Response.ListResult;
 import me.soungho.BlogAPIServer.Response.ResponseService;
 import me.soungho.BlogAPIServer.Response.SingleResult;
 
-import org.springframework.http.HttpStatus;
 
 /**
  * 게시판 컨트롤러
@@ -103,11 +99,5 @@ public class PostController {
 	notes = "기존 게시글을 삭제합니다. path로 삭제하고자 하는 게시글의 번호를 넘겨야 합니다.")
 	public SingleResult<Integer> delete(@PathVariable int postId) {
 		return responseService.getSingleResult(postService.delete(postId));
-	}
-	
-	@ExceptionHandler(PostValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-	private CommonResult PostExceptionHandler(PostValidationException ex) {
-		return responseService.getFailResult(ex.getMessage());
 	}
 }
