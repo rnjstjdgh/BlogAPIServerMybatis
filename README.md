@@ -14,7 +14,13 @@
 
 1.  회원 관리 기능
     * spring security 도입
+        * 기본 로그인
+        * 소셜 로그인
+            * https://engkimbs.tistory.com/849
 
 2.  검색 기능 
     * 게시글의 제목을 통한 검색
     * 추후 게시글에 tag를 달아서 검색하는등 기능 추가 예정
+
+* 참고
+    * spring boot2로 rest api만들기: https://daddyprogrammer.org/post/404/spring-boot2-design-api-interface-and-data-structure/
