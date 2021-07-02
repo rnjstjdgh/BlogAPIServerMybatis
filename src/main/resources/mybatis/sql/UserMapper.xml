@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="nk.demo.BlogAPIServer.Security.User.UserRepository">
+
+	<select id="getByEmail" parameterType="String"
+		resultType="nk.demo.BlogAPIServer.Security.User.UserEntity">
+		SELECT
+		U.USER_ID,
+		U.EMAIL,
+		U.PASSWORD,
+		U.ROLE
+		FROM T_USER U
+		WHERE U.EMAIL = #{email}
+	</select>
+
+
+<insert id="save"
+		parameterType="nk.demo.BlogAPIServer.Security.User.UserEntity"
+		useGeneratedKeys="true" keyProperty="userId">
+		INSERT INTO T_USER
+		(
+		EMAIL,
+		PASSWORD,
+		ROLE
+		)
+		VALUES
+		(
+		#{email},
+		#{password},
+		#{role}
+		)
+	</insert>
+</mapper>
+
