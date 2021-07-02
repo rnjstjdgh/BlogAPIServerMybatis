@@ -1,4 +1,4 @@
-package me.soungho.BlogAPIServer.mvc.controller;
+package me.soungho.BlogAPIServer.Post;
 
 import java.util.List;
 
@@ -19,9 +19,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import me.soungho.BlogAPIServer.CustomError.PostError;
-import me.soungho.BlogAPIServer.mvc.domain.PostDto;
-import me.soungho.BlogAPIServer.mvc.service.PostService;
 import me.soungho.BlogAPIServer.CustomException.PostValidationException;
+
 import org.springframework.http.HttpStatus;
 
 /**

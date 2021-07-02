@@ -1,15 +1,11 @@
-package me.soungho.BlogAPIServer.mvc.service;
+package me.soungho.BlogAPIServer.Post;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import me.soungho.BlogAPIServer.CustomException.PostValidationException;
-import me.soungho.BlogAPIServer.mvc.domain.PostDto;
-import me.soungho.BlogAPIServer.mvc.domain.PostEntity;
-import me.soungho.BlogAPIServer.mvc.repository.PostRepository;
 
 
 /**
@@ -18,7 +14,6 @@ import me.soungho.BlogAPIServer.mvc.repository.PostRepository;
  * **/
 @Service
 public class PostService {
-	
 	
 	@Autowired
 	private PostRepository postRepository;

@@ -1,5 +1,4 @@
-package me.soungho.BlogAPIServer.mvc.domain;
-
+package me.soungho.BlogAPIServer.Post;
 
 import java.time.LocalDateTime;
 
@@ -8,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class PostEntity {
+public class PostDto {
 
 	private int 			postId;			//개시글 넘버(primary key)
 	private String 			title;			//제목
@@ -16,12 +15,24 @@ public class PostEntity {
 	private String 			contents;		//내용
 	private LocalDateTime 	regDate;		//등록일자
 	
+	public PostEntity toEntity() {
+		PostEntity postEntity = PostEntity.builder()
+									.postId(postId)
+									.title(title)
+									.userId(userId)
+									.contents(contents)
+									.regDate(regDate)
+									.build();
+		return postEntity;
+	}
+	
 	@Builder
-	public PostEntity(int postId, String title, int userId, String contents, LocalDateTime regDate) {
+	public PostDto(int postId, String title, int userId, String contents, LocalDateTime regDate) {
 		this.postId = postId;
 		this.title = title;
 		this.userId = userId;
 		this.contents = contents;
 		this.regDate = regDate;
 	}
+	
 }

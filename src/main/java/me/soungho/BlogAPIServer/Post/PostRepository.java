@@ -1,10 +1,8 @@
-package me.soungho.BlogAPIServer.mvc.repository;
+package me.soungho.BlogAPIServer.Post;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
-
-import me.soungho.BlogAPIServer.mvc.domain.PostEntity;
 
 /**
  * 게시판 레포지토리

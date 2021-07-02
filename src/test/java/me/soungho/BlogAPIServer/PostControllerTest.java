@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.soungho.BlogAPIServer.mvc.domain.PostDto;
+import me.soungho.BlogAPIServer.Post.PostDto;
 
 /**
  * spring controller test 참고: https://tech.devgd.com/12

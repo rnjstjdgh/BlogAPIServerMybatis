@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @author gshgsh0831
  */
 @Configuration
-@MapperScan(basePackages = "me.soungho.BlogAPIServer.mvc.repository")
+@MapperScan(basePackages = "me.soungho.BlogAPIServer.Post")
 public class MybatisConfig {
 
 	@Bean

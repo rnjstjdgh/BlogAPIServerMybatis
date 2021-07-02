@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="me.soungho.BlogAPIServer.mvc.repository.PostRepository">
+	namespace="me.soungho.BlogAPIServer.Post.PostRepository">
 
 	<select id="getList"
-		parameterType="me.soungho.BlogAPIServer.mvc.domain.PostEntity"
-		resultType="me.soungho.BlogAPIServer.mvc.domain.PostEntity">
+		parameterType="me.soungho.BlogAPIServer.Post.PostEntity"
+		resultType="me.soungho.BlogAPIServer.Post.PostEntity">
 		SELECT
 		P.POST_ID,
 		P.TITLE,
@@ -18,7 +18,7 @@
 	</select>
 
 	<select id="get" parameterType="int"
-		resultType="me.soungho.BlogAPIServer.mvc.domain.PostEntity">
+		resultType="me.soungho.BlogAPIServer.Post.PostEntity">
 		SELECT
 		P.POST_ID,
 		P.TITLE,
@@ -30,7 +30,7 @@
 	</select>
 
 	<insert id="save"
-		parameterType="me.soungho.BlogAPIServer.mvc.domain.PostEntity"
+		parameterType="me.soungho.BlogAPIServer.Post.PostEntity"
 		useGeneratedKeys="true" keyProperty="postId">
 		INSERT INTO T_POST
 		(
@@ -49,7 +49,7 @@
 	</insert>
 
 	<update id="update"
-		parameterType="me.soungho.BlogAPIServer.mvc.domain.PostEntity">
+		parameterType="me.soungho.BlogAPIServer.Post.PostEntity">
 		UPDATE T_POST
 		SET
 		TITLE = #{title},
