@@ -11,6 +11,7 @@
 
 0.  게시글 기능
     * 페이징 기능 
+    * Role에 따른 리소스 인가(jwt token 설정)
 
 1.  회원 관리 기능
     * spring security 도입
