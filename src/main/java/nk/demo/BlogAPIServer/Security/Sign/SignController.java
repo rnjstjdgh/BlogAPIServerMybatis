@@ -1,9 +1,7 @@
 package nk.demo.BlogAPIServer.Security.Sign;
 
 import nk.demo.BlogAPIServer.CustomException.CustomNullPointException;
-import nk.demo.BlogAPIServer.Security.User.UserEntity;
-import nk.demo.BlogAPIServer.Security.User.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import nk.demo.BlogAPIServer.Security.User.UserDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,25 +18,21 @@ import nk.demo.BlogAPIServer.Security.JWT.JwtTokenProvider;
 @RequiredArgsConstructor
 @RestController
 public class SignController {
-	private final UserRepository userRepository;
-	private final JwtTokenProvider jwtTokenProvider;
-	private final ResponseService responseService;
-	private final PasswordEncoder passwordEncoder;
 	private final SignService signService;
 
 	@ApiOperation(value = "로그인", notes = "이메일 회원 로그인을 한다.")
 	@PostMapping(value = "/signin")
-	public SingleResult<String> signin(@RequestBody UserEntity userEntity) {
-		if(userEntity == null)
-			throw  new CustomNullPointException("userEntity should not null");
-		return signService.signin(userEntity);
+	public SingleResult<String> signin(@RequestBody UserDto userDto) {
+		if(userDto == null)
+			throw  new CustomNullPointException("userDto should not null");
+		return signService.signin(userDto);
 	}
 
 	@ApiOperation(value = "가입", notes = "회원가입을 한다.")
 	@PostMapping(value = "/signup")
-	public CommonResult signup(@RequestBody UserEntity userEntity) {
-		if(userEntity == null)
+	public CommonResult signup(@RequestBody UserDto userDto) {
+		if(userDto == null)
 			throw  new CustomNullPointException("userEntity should not null");
-		return signService.signup(userEntity);
+		return signService.signup(userDto);
 	}
 }

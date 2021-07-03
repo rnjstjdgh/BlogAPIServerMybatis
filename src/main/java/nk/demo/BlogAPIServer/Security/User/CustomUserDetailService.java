@@ -13,6 +13,12 @@ public class CustomUserDetailService implements UserDetailsService {
     private UserRepository userRepository;
 
     public UserDetails loadUserByUsername(String email) {
-        return userRepository.getByEmail(email);
+        UserEntity userEntity = userRepository.getByEmail(email);
+        return UserDto.builder()
+                .userId(userEntity.getUserId())
+                .email(userEntity.getEmail())
+                .password(userEntity.getPassword())
+                .role(userEntity.getRole())
+                .build();
     }
 }

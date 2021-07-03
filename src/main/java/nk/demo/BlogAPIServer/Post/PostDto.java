@@ -16,14 +16,13 @@ public class PostDto {
 	private LocalDateTime 	regDate;		//등록일자
 	
 	public PostEntity toEntity() {
-		PostEntity postEntity = PostEntity.builder()
-									.postId(postId)
-									.title(title)
-									.userId(userId)
-									.contents(contents)
-									.regDate(regDate)
-									.build();
-		return postEntity;
+		return PostEntity.builder()
+							.postId(postId)
+							.title(title)
+							.userId(userId)
+							.contents(contents)
+							.regDate(regDate)
+							.build();
 	}
 	
 	@Builder

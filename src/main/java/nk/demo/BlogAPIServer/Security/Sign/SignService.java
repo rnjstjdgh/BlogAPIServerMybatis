@@ -6,6 +6,7 @@ import nk.demo.BlogAPIServer.Response.CommonResult;
 import nk.demo.BlogAPIServer.Response.ResponseService;
 import nk.demo.BlogAPIServer.Response.SingleResult;
 import nk.demo.BlogAPIServer.Security.JWT.JwtTokenProvider;
+import nk.demo.BlogAPIServer.Security.User.UserDto;
 import nk.demo.BlogAPIServer.Security.User.UserEntity;
 import nk.demo.BlogAPIServer.Security.User.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,27 +21,26 @@ public class SignService {
     private final ResponseService responseService;
     private final PasswordEncoder passwordEncoder;
 
-    public SingleResult<String> signin(UserEntity userEntity) {
-        UserEntity findedUserEntity = userRepository.getByEmail(userEntity.getEmail());
+    public SingleResult<String> signin(UserDto userDto) {
+        UserEntity findedUserEntity = userRepository.getByEmail(userDto.getEmail());
         if(findedUserEntity == null )
             throw new SignFailedException("login fail, check email");
 
-        if (!passwordEncoder.matches(userEntity.getPassword(), findedUserEntity.getPassword()))
+        if (!passwordEncoder.matches(userDto.getPassword(), findedUserEntity.getPassword()))
             throw new SignFailedException("login fail, check password");
 
         return responseService.getSingleResult(
                 jwtTokenProvider.createToken(String.valueOf(findedUserEntity.getUserId()), findedUserEntity.getRole()));
     }
 
-    public CommonResult signup(UserEntity userEntity) {
-        if(userRepository.getByEmail(userEntity.getEmail()) != null)
+    public CommonResult signup(UserDto userDto) {
+        if(userRepository.getByEmail(userDto.getEmail()) != null)
             throw new SignFailedException("email overlap");
-
-        userRepository.save(
-                UserEntity.builder()
-                        .email(userEntity.getEmail())
-                        .password(passwordEncoder.encode(userEntity.getPassword()))
-                        .role("ROLE_USER").build());
-        return responseService.getSuccessResult();
+        UserEntity userEntity = UserEntity.builder()
+                .email(userDto.getEmail())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .role("ROLE_USER").build();
+        userRepository.save(userEntity);
+        return responseService.getSingleResult(userEntity.getUserId());
     }
 }
