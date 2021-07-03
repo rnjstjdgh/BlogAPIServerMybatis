@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  **/
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)	//@Test가 붙은 메소드를 실행할 때 마다가 아니라 모든 테스트에 대해 하나의 인스턴스만 만든다.
 public class SignControllerTest {
 	
 	@Autowired
@@ -34,13 +34,14 @@ public class SignControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+
+	/**
+	 * 테스트 시작 전에 회원 한명을 등록
+	 * **/
 	@BeforeAll
 	void init() throws Exception {
-
-		String jsonUserNormal = "{\"userId\":0,\"email\":\"gshgsh0831@gmail.com\",\"password\": \"Rnjs@123456789\",\"role\":null}";
-
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
-				.content(jsonUserNormal)
+				.content("{\"email\":\"gshgsh0831@gmail.com\",\"password\": \"Rnjs@123456789\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -52,26 +53,60 @@ public class SignControllerTest {
 	 **/
 	@Test
 	public void signinSucessTest() throws Exception{
-
+		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
+				.content("{\"email\":\"gshgsh0831@gmail.com\",\"password\": \"Rnjs@123456789\"}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(print());
 	}
-	
+
 	/**
-	 * 로그인 실패 테스트 => 중복된 이메일로 로그인
+	 * 로그인 실패 테스트 => 요청 메세지 바디가 없는 경우
 	 **/
 	@Test
-	public void signinFailTest() throws Exception{
-
+	public void signinNoRequestBodyFailTest() throws Exception{
+		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print());
 	}
 
-	
+	/**
+	 * 로그인 실패 테스트 => 없는 이메일로 로그인
+	 **/
+	@Test
+	public void signinEmailFailTest() throws Exception{
+		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
+				.content("{\"email\":\"xxxxx@gmail.com\",\"password\": \"Rnjs@123456789\"}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.msg").value("login fail, check email"))
+				.andDo(print());
+	}
+
+	/**
+	 * 로그인 실패 테스트 => 없는 비밀번호로 로그인
+	 **/
+	@Test
+	public void signinPassowrdFailTest() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
+				.content("{\"email\":\"gshgsh0831@gmail.com\",\"password\": \"xxxx456789\"}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized())
+				.andExpect(jsonPath("$.msg").value("login fail, check password"))
+				.andDo(print());
+	}
+
 	/**
 	 * 회원가입 성공 테스트
 	 * 
 	 **/
 	@Test
 	public void signupSucessTest() throws Exception {
-		String jsonUserNormal = "{\"userId\":0,\"email\":\"gshgsh1111@gmail.com\",\"password\": \"Rnjs@123456789\",\"role\":null}";
-
+		String jsonUserNormal = "{\"email\":\"gshgsh1111@gmail.com\",\"password\": \"Rnjs@123456789\"}";
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
 				.content(jsonUserNormal)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +120,7 @@ public class SignControllerTest {
 	 **/
 	@Test
 	public void signupFailTest() throws Exception{
-		String jsonUserNormal = "{\"userId\":0,\"email\":\"gshgsh2222@gmail.com\",\"password\": \"Rnjs@123456789\",\"role\":null}";
+		String jsonUserNormal = "{\"email\":\"gshgsh2222@gmail.com\",\"password\": \"Rnjs@123456789\"}";
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
 				.content(jsonUserNormal)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +128,7 @@ public class SignControllerTest {
 				.andExpect(status().isOk())
 				.andDo(print());
 		
-		jsonUserNormal = "{\"userId\":0,\"email\":\"gshgsh2222@gmail.com\",\"password\": \"Rnjs@123456789\",\"role\":null}";
+		jsonUserNormal = "{\"email\":\"gshgsh2222@gmail.com\",\"password\": \"Rnjs@123456789\"}";
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
 				.content(jsonUserNormal)
 				.contentType(MediaType.APPLICATION_JSON)

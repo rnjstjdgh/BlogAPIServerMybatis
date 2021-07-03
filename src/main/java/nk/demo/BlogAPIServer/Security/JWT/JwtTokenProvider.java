@@ -1,4 +1,4 @@
-package nk.demo.BlogAPIServer.Security;
+package nk.demo.BlogAPIServer.Security.JWT;
 
 import java.util.Base64;
 import java.util.Date;

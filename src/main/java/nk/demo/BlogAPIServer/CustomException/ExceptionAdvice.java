@@ -19,13 +19,19 @@ public class ExceptionAdvice {
 
 	@ExceptionHandler(PostValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected CommonResult PostExceptionHandler(Exception ex) {
+    protected CommonResult postExceptionHandler(Exception ex) {
 		return responseService.getFailResult(ex.getMessage());
     }
 	
-	@ExceptionHandler(EmailSigninFailedException.class)
+	@ExceptionHandler(SignFailedException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	protected CommonResult emailSigninFailed(HttpServletRequest request, EmailSigninFailedException ex) {
+	protected CommonResult emailSignFailedHandler(SignFailedException ex) {
 	    return responseService.getFailResult(ex.getMessage());
+	}
+
+	@ExceptionHandler(CustomNullPointException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	protected CommonResult customNullPointExceptionHandler(SignFailedException ex) {
+		return responseService.getFailResult(ex.getMessage());
 	}
 }
