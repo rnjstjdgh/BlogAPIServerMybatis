@@ -1,10 +1,11 @@
-package nk.demo.BlogAPIServer.Post;
+package nk.demo.BlogAPIServer.Post.Dtos;
 
 import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nk.demo.BlogAPIServer.Post.PostEntity;
 
 @Getter @Setter
 public class PostDto {

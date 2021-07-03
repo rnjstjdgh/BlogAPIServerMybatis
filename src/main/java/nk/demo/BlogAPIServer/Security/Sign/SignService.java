@@ -21,24 +21,24 @@ public class SignService {
     private final ResponseService responseService;
     private final PasswordEncoder passwordEncoder;
 
-    public SingleResult<String> signin(UserDto userDto) {
-        UserEntity findedUserEntity = userRepository.getByEmail(userDto.getEmail());
+    public SingleResult<String> signin(String email, String password) {
+        UserEntity findedUserEntity = userRepository.getByEmail(email);
         if(findedUserEntity == null )
             throw new SignFailedException("login fail, check email");
 
-        if (!passwordEncoder.matches(userDto.getPassword(), findedUserEntity.getPassword()))
+        if (!passwordEncoder.matches(password, findedUserEntity.getPassword()))
             throw new SignFailedException("login fail, check password");
 
         return responseService.getSingleResult(
                 jwtTokenProvider.createToken(String.valueOf(findedUserEntity.getUserId()), findedUserEntity.getRole()));
     }
 
-    public CommonResult signup(UserDto userDto) {
-        if(userRepository.getByEmail(userDto.getEmail()) != null)
+    public CommonResult signup(String email, String password) {
+        if(userRepository.getByEmail(email) != null)
             throw new SignFailedException("email overlap");
         UserEntity userEntity = UserEntity.builder()
-                .email(userDto.getEmail())
-                .password(passwordEncoder.encode(userDto.getPassword()))
+                .email(email)
+                .password(passwordEncoder.encode(password))
                 .role("ROLE_USER").build();
         userRepository.save(userEntity);
         return responseService.getSingleResult(userEntity.getUserId());

@@ -3,6 +3,8 @@ package nk.demo.BlogAPIServer.Post;
 import java.util.ArrayList;
 import java.util.List;
 
+import nk.demo.BlogAPIServer.Post.Dtos.BasicPostDto;
+import nk.demo.BlogAPIServer.Post.Dtos.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import nk.demo.BlogAPIServer.CustomException.PostValidationException;
@@ -53,35 +55,35 @@ public class PostService {
 	
 	/**
 	 * 하나의 게시글 등록
-	 * @param post
+	 * @param basicPostDto
 	 * @return
 	 * **/
-	public int save(PostDto postDto) {
-		if(postDto.getContents() == null || postDto.getTitle() == null || postDto.getUserId() == 0)
+	public int save(BasicPostDto basicPostDto) {
+		if(basicPostDto.getContents() == null || basicPostDto.getTitle() == null || basicPostDto.getUserId() == 0)
 			throw new PostValidationException("Not enough post data.");
-		if(postDto.getPostId() != 0) 
-			throw new PostValidationException("should not send postId.");
-		if(postDto.getRegDate() != null)
-			throw new PostValidationException("should not send regDate.");
-		PostEntity postEntity = postDto.toEntity();
+
+		PostEntity postEntity = basicPostDto.toEntity();
 		postRepository.save(postEntity);
 		return postEntity.getPostId();
 	}
-	
-	
+
 	/**
 	 * {postId}에 해당하는 게시글 수정
-	 * @param postId, post
+	 * @param basicPostDto
 	 * @return
 	 * **/
-	public int update(PostDto postDto) {
-		if(postDto.getPostId() <= 0) 
+	public int update(int postId, BasicPostDto basicPostDto) {
+		if(postId <= 0)
 			throw new PostValidationException("postId cannot be minus.");
-		if(postDto.getRegDate() !=null)
-			throw new PostValidationException("don't need regDate.");
-		if(postRepository.get(postDto.getPostId()) ==null)
+
+		if(basicPostDto.getContents() == null || basicPostDto.getTitle() == null || basicPostDto.getUserId() == 0)
+			throw new PostValidationException("Not enough post data.");
+
+		if(postRepository.get(postId) ==null)
 			throw new PostValidationException("There is no corresponding information for postId.");
-		PostEntity postEntity = postDto.toEntity();
+
+		PostEntity postEntity = basicPostDto.toEntity();
+		postEntity.setPostId(postId);
 		postRepository.update(postEntity);		
 		return postEntity.getPostId();
 	}

@@ -1,9 +1,11 @@
 package nk.demo.BlogAPIServer.Security.Sign;
 
+import io.swagger.annotations.ApiParam;
 import nk.demo.BlogAPIServer.CustomException.CustomNullPointException;
 import nk.demo.BlogAPIServer.Security.User.UserDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -22,17 +24,19 @@ public class SignController {
 
 	@ApiOperation(value = "로그인", notes = "이메일 회원 로그인을 한다.")
 	@PostMapping(value = "/signin")
-	public SingleResult<String> signin(@RequestBody UserDto userDto) {
-		if(userDto == null)
-			throw  new CustomNullPointException("userDto should not null");
-		return signService.signin(userDto);
+	public SingleResult<String> signin(@ApiParam(value = "이메일", required = true) @RequestParam("email") String email,
+									   @ApiParam(value = "비밀번호", required = true) @RequestParam("password") String password) {
+		if(email == null || password == null)
+			throw  new CustomNullPointException("email or password should be included");
+		return signService.signin(email,password);
 	}
 
 	@ApiOperation(value = "가입", notes = "회원가입을 한다.")
 	@PostMapping(value = "/signup")
-	public CommonResult signup(@RequestBody UserDto userDto) {
-		if(userDto == null)
-			throw  new CustomNullPointException("userEntity should not null");
-		return signService.signup(userDto);
+	public CommonResult signup(@ApiParam(value = "이메일", required = true) @RequestParam("email") String email,
+							   @ApiParam(value = "비밀번호", required = true) @RequestParam("password") String password) {
+		if(email == null || password == null)
+			throw  new CustomNullPointException("email or password should be included");
+		return signService.signup(email, password);
 	}
 }

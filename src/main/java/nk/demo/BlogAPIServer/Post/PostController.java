@@ -1,6 +1,8 @@
 package nk.demo.BlogAPIServer.Post;
 
 
+import nk.demo.BlogAPIServer.Post.Dtos.BasicPostDto;
+import nk.demo.BlogAPIServer.Post.Dtos.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,18 +62,17 @@ public class PostController {
 	public SingleResult<PostDto> get(@PathVariable int postId) {
 		return responseService.getSingleResult(postService.get(postId));
 	}
-	
+
 	/**
 	 * 하나의 게시글 등록, 등록된 게시글의 postId리턴
-	 * @param post
+	 * @param basicPostDto
 	 * @return
 	 * **/
 	@PostMapping("")
 	@ApiOperation(value = "신규 게시글 등록", 
-	notes = "신규 게시글을 등록합니다. 게시글 등록일 & 게시글 번호는 넘기지 않아야 합니다."
-			+ "{title, userId, contents}을 넘겨야 합니다.")
-	public SingleResult<Integer> save(@RequestBody PostDto postDto) {
-		return responseService.getSingleResult(postService.save(postDto));
+	notes = "신규 게시글을 등록합니다.")
+	public SingleResult<Integer> save(@RequestBody BasicPostDto basicPostDto) {
+		return responseService.getSingleResult(postService.save(basicPostDto));
 	}
 	
 	/**
@@ -83,9 +84,8 @@ public class PostController {
 	@ApiOperation(value = "기존 게시글 수정", 
 	notes = "기존 게시글을 수정합니다. 게시글 아이디는 path로 넘기고 나머지 정보를 json body로 넘겨야 합니다."
 			+ "게시글 등록 일자는 넘기면 안됩니다.")
-	public SingleResult<Integer> update(@PathVariable int postId, @RequestBody PostDto postDto) {
-		postDto.setPostId(postId);
-		return responseService.getSingleResult(postService.update(postDto));
+	public SingleResult<Integer> update(@PathVariable int postId, @RequestBody BasicPostDto basicPostDto) {
+		return responseService.getSingleResult(postService.update(postId ,basicPostDto));
 	}
 	
 	/**

@@ -41,11 +41,12 @@ public class SignControllerTest {
 	@BeforeAll
 	void init() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
-				.content("{\"email\":\"gshgsh0831@gmail.com\",\"password\": \"Rnjs@123456789\"}")
-				.contentType(MediaType.APPLICATION_JSON)
+//				.content("{\"email\":\"gshgsh0831@gmail.com\",\"password\": \"Rnjs@123456789\"}")
+				.content("email=gshgsh0831@gmail.com&password=Rnjs@123456789")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andDo(print());
+				.andDo(print())
+				.andExpect(status().isOk());
 	}
 
 	/**
@@ -54,8 +55,8 @@ public class SignControllerTest {
 	@Test
 	public void signinSucessTest() throws Exception{
 		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
-				.content("{\"email\":\"gshgsh0831@gmail.com\",\"password\": \"Rnjs@123456789\"}")
-				.contentType(MediaType.APPLICATION_JSON)
+				.content("email=gshgsh0831@gmail.com&password=Rnjs@123456789")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(print());
@@ -67,7 +68,7 @@ public class SignControllerTest {
 	@Test
 	public void signinNoRequestBodyFailTest() throws Exception{
 		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
-				.contentType(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print());
 	}
@@ -78,8 +79,8 @@ public class SignControllerTest {
 	@Test
 	public void signinEmailFailTest() throws Exception{
 		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
-				.content("{\"email\":\"xxxxx@gmail.com\",\"password\": \"Rnjs@123456789\"}")
-				.contentType(MediaType.APPLICATION_JSON)
+				.content("email=xxxxx@gmail.com&password=Rnjs@123456789")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.msg").value("login fail, check email"))
@@ -91,9 +92,11 @@ public class SignControllerTest {
 	 **/
 	@Test
 	public void signinPassowrdFailTest() throws Exception {
+
+
 		mockMvc.perform(MockMvcRequestBuilders.post("/signin")
-				.content("{\"email\":\"gshgsh0831@gmail.com\",\"password\": \"xxxx456789\"}")
-				.contentType(MediaType.APPLICATION_JSON)
+				.content("email=gshgsh0831@gmail.com&password=Rnjs@zzz")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.msg").value("login fail, check password"))
@@ -106,10 +109,9 @@ public class SignControllerTest {
 	 **/
 	@Test
 	public void signupSucessTest() throws Exception {
-		String jsonUserNormal = "{\"email\":\"gshgsh1111@gmail.com\",\"password\": \"Rnjs@123456789\"}";
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
-				.content(jsonUserNormal)
-				.contentType(MediaType.APPLICATION_JSON)
+				.content("email=gshgsh1111@gmail.com&password=Rnjs@123456789")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(print());
@@ -120,21 +122,18 @@ public class SignControllerTest {
 	 **/
 	@Test
 	public void signupFailTest() throws Exception{
-		String jsonUserNormal = "{\"email\":\"gshgsh2222@gmail.com\",\"password\": \"Rnjs@123456789\"}";
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
-				.content(jsonUserNormal)
-				.contentType(MediaType.APPLICATION_JSON)
+				.content("email=gshgsh2222@gmail.com&password=Rnjs@123456789")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(print());
-		
-		jsonUserNormal = "{\"email\":\"gshgsh2222@gmail.com\",\"password\": \"Rnjs@123456789\"}";
+
 		mockMvc.perform(MockMvcRequestBuilders.post("/signup")
-				.content(jsonUserNormal)
-				.contentType(MediaType.APPLICATION_JSON)
+				.content("email=gshgsh2222@gmail.com&password=Rnjs@123456789")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.msg").value("email overlap"))
 				.andDo(print());
 	}
 
