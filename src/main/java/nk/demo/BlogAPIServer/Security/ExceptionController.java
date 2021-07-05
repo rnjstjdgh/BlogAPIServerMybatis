@@ -19,7 +19,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @ApiIgnore
 public class ExceptionController {
 
-	@GetMapping(value = "/entrypoint")
+	@GetMapping(value = "/EmptyJWTToken")
 	public CommonResult entrypointException() {
 		throw new AuthenticationEntryPointException("JWT: You do not have permission to access this resource.");
 	}

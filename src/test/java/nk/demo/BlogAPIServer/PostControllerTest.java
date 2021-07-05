@@ -129,16 +129,12 @@ public class PostControllerTest {
 				MockMvcRequestBuilders.post("/posts").header("X-AUTH-TOKEN", testToken).content(jsonPostIncludePostId)
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
-//				.andExpect(status().isBadRequest())
-//				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"should not send postId.\"}"));
 
 		// 이상 요청 => regDate를 넘긴 경우
 		mockMvc.perform(
 				MockMvcRequestBuilders.post("/posts").header("X-AUTH-TOKEN", testToken).content(jsonPostIncludeRegDate)
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
-//				.andExpect(status().isBadRequest())
-//				.andExpect(content().string("{\"success\":false,\"code\":-1,\"msg\":\"should not send regDate.\"}"));
 	}
 
 	@Test
