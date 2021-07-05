@@ -34,4 +34,10 @@ public class ExceptionAdvice {
 	protected CommonResult customNullPointExceptionHandler(SignFailedException ex) {
 		return responseService.getFailResult(ex.getMessage());
 	}
+	
+	@ExceptionHandler(AuthenticationEntryPointException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public CommonResult authenticationEntryPointException(HttpServletRequest request, AuthenticationEntryPointException ex) {
+	        return responseService.getFailResult(ex.getMessage());
+	}
 }

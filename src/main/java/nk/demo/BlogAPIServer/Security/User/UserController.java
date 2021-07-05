@@ -43,6 +43,7 @@ public class UserController {
 		return responseService.getListResult(customUserDetailService.getList());
 	}
 	
+	
 	/**
 	 * {userId}에 해당하는 사용자 리턴, 없으면 null리턴
 	 * @param userId

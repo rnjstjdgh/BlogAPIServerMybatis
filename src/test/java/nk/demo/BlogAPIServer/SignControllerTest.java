@@ -31,10 +31,6 @@ public class SignControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
-
 	/**
 	 * 테스트 시작 전에 회원 한명을 등록
 	 * **/
