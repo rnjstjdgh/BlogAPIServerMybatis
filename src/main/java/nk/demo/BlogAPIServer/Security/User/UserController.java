@@ -1,6 +1,13 @@
 package nk.demo.BlogAPIServer.Security.User;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -10,62 +17,90 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import nk.demo.BlogAPIServer.Response.ListResult;
 import nk.demo.BlogAPIServer.Response.ResponseService;
+import nk.demo.BlogAPIServer.Response.SingleResult;
+import nk.demo.BlogAPIServer.Security.User.Dtos.BasicUserDto;
+import nk.demo.BlogAPIServer.Security.User.Dtos.UserDto;
 
-@Api(tags = {"2. User"})
+@Api(tags = {"3. 사용자 API(어드민 권한)"})
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final CustomUserDetailService customUserDetailService;
     private final ResponseService responseService; // 결과를 처리할 Service
 
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
-//    })
-//    @ApiOperation(value = "회원 리스트 조회", notes = "모든 회원을 조회한다")
-//    @GetMapping(value = "/users")
-//    public ListResult<UserEntity> findAllUser() {
-//        // 결과데이터가 여러건인경우 getListResult를 이용해서 결과를 출력한다.
-//        return responseService.getListResult(userRepository.findAll());
-//    }
+	/**
+	 * 전체 사용자 리스트 리턴
+	 * @return
+	 * **/
+	@GetMapping("")
+	@ApiOperation(value = "사용자 목록 조회", notes = "전체 사용자 리스트를 반환합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token(관리자 토큰)", required = false, dataType = "String", paramType = "header")
+	})
+	public ListResult<UserDto> getList(){
+		return responseService.getListResult(customUserDetailService.getList());
+	}
+	
+	/**
+	 * {userId}에 해당하는 사용자 리턴, 없으면 null리턴
+	 * @param userId
+	 * @return
+	 * **/
+	@GetMapping("/{userId}")
+	@ApiOperation(value = "사용자 상세 조회",
+	notes = "사용자 번호에 해당하는 상세 정보를 조회할 수 있습니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token(관리자 토큰)", required = false, dataType = "String", paramType = "header"),
+		@ApiImplicitParam(name = "userId",value = "사용자 번호", example = "1" )
+	})
+	public SingleResult<UserDto> get(@PathVariable int userId) {
+		return responseService.getSingleResult(customUserDetailService.get(userId));
+	}
+	
+	/**
+	 * 하나의 사용자 등록, 등록된 사용자의 userId리턴
+	 * @param BasicUserDto
+	 * @return
+	 * **/
+	@PostMapping("")
+	@ApiOperation(value = "신규 사용자 등록", notes = "신규 사용자를 등록합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token(관리자 토큰)", required = false, dataType = "String", paramType = "header")
+	})
+	public SingleResult<Integer> save(@RequestBody BasicUserDto userDto) {
+		return responseService.getSingleResult(customUserDetailService.save(userDto));
+	}
 
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
-//    })
-//    @ApiOperation(value = "회원 단건 조회", notes = "회원번호(msrl)로 회원을 조회한다")
-//    @GetMapping(value = "/user")
-//    public SingleResult<User> findUserById(@ApiParam(value = "언어", defaultValue = "ko") @RequestParam String lang) {
-//        // SecurityContext에서 인증받은 회원의 정보를 얻어온다.
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String id = authentication.getName();
-//        // 결과데이터가 단일건인경우 getSingleResult를 이용해서 결과를 출력한다.
-//        return responseService.getSingleResult(userJpaRepo.findByUid(id).orElseThrow(CUserNotFoundException::new));
-//    }
-
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
-//    })
-//    @ApiOperation(value = "회원 수정", notes = "회원정보를 수정한다")
-//    @PutMapping(value = "/user")
-//    public SingleResult<User> modify(
-//            @ApiParam(value = "회원번호", required = true) @RequestParam int msrl,
-//            @ApiParam(value = "회원이름", required = true) @RequestParam String name) {
-//        User user = User.builder()
-//                .msrl(msrl)
-//                .name(name)
-//                .build();
-//        return responseService.getSingleResult(userJpaRepo.save(user));
-//    }
-
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
-//    })
-//    @ApiOperation(value = "회원 삭제", notes = "userId로 회원정보를 삭제한다")
-//    @DeleteMapping(value = "/user/{msrl}")
-//    public CommonResult delete(
-//            @ApiParam(value = "회원번호", required = true) @PathVariable int msrl) {
-//        userJpaRepo.deleteById(msrl);
-//        // 성공 결과 정보만 필요한경우 getSuccessResult()를 이용하여 결과를 출력한다.
-//        return responseService.getSuccessResult();
-//    }
+	
+	/**
+	 * {userId}에 해당하는 사용자 수정, 수정된 사용자의 userId리턴
+	 * @param userId, user
+	 * @return
+	 * **/
+	@PutMapping("/{userId}")
+	@ApiOperation(value = "기존 사용자 수정", 
+	notes = "기존 사용자를 수정합니다. 사용자 아이디는 path로 넘기고 나머지 정보를 json body로 넘겨야 합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token(관리자 토큰)", required = false, dataType = "String", paramType = "header")
+	})
+	public SingleResult<Integer> update(@PathVariable int userId, @RequestBody BasicUserDto userDto) {
+		return responseService.getSingleResult(customUserDetailService.update(userId ,userDto));
+	}
+	
+	/**
+	 * {userId}에 해당하는 사용자 삭제, 삭제된 사용자의 userId리턴
+	 * @param userId
+	 * @return
+	 * **/
+	@DeleteMapping("/{userId}")
+	@ApiOperation(value = "기존 사용자 삭제", 
+	notes = "기존 사용자를 삭제합니다. path로 삭제하고자 하는 사용자의 번호를 넘겨야 합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token(관리자 토큰)", required = false, dataType = "String", paramType = "header")
+	})
+	public SingleResult<Integer> delete(@PathVariable int userId) {
+		return responseService.getSingleResult(customUserDetailService.delete(userId));
+	}
 }

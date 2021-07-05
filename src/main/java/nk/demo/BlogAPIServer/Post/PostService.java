@@ -7,7 +7,7 @@ import nk.demo.BlogAPIServer.Post.Dtos.BasicPostDto;
 import nk.demo.BlogAPIServer.Post.Dtos.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import nk.demo.BlogAPIServer.CustomException.PostValidationException;
+import nk.demo.BlogAPIServer.CustomException.ApiValidationException;
 
 
 /**
@@ -40,10 +40,10 @@ public class PostService {
 	 * **/
 	public PostDto get(int postId) {
 		if(postId < 0)
-			throw new PostValidationException("postId cannot be minus.");
+			throw new ApiValidationException("postId cannot be minus.");
 		PostEntity postEntity = postRepository.get(postId);
 		if(postEntity == null)
-			throw new PostValidationException("There is no corresponding information for postId.");
+			throw new ApiValidationException("There is no corresponding information for postId.");
 		return PostDto.builder()
 				.postId(postEntity.getPostId())
 				.title(postEntity.getTitle())
@@ -60,7 +60,7 @@ public class PostService {
 	 * **/
 	public int save(BasicPostDto basicPostDto) {
 		if(basicPostDto.getContents() == null || basicPostDto.getTitle() == null || basicPostDto.getUserId() == 0)
-			throw new PostValidationException("Not enough post data.");
+			throw new ApiValidationException("Not enough post data.");
 
 		PostEntity postEntity = basicPostDto.toEntity();
 		postRepository.save(postEntity);
@@ -74,13 +74,13 @@ public class PostService {
 	 * **/
 	public int update(int postId, BasicPostDto basicPostDto) {
 		if(postId <= 0)
-			throw new PostValidationException("postId cannot be minus.");
+			throw new ApiValidationException("postId cannot be minus.");
 
 		if(basicPostDto.getContents() == null || basicPostDto.getTitle() == null || basicPostDto.getUserId() == 0)
-			throw new PostValidationException("Not enough post data.");
+			throw new ApiValidationException("Not enough post data.");
 
 		if(postRepository.get(postId) ==null)
-			throw new PostValidationException("There is no corresponding information for postId.");
+			throw new ApiValidationException("There is no corresponding information for postId.");
 
 		PostEntity postEntity = basicPostDto.toEntity();
 		postEntity.setPostId(postId);
@@ -95,9 +95,9 @@ public class PostService {
 	 * **/
 	public int delete(int postId) {
 		if(postId <= 0) 
-			throw new PostValidationException("postId cannot be minus.");
+			throw new ApiValidationException("postId cannot be minus.");
 		if(postRepository.get(postId) ==null)
-			throw new PostValidationException("There is no corresponding information for postId.");
+			throw new ApiValidationException("There is no corresponding information for postId.");
 		postRepository.delete(postId);
 		return postId;
 	}

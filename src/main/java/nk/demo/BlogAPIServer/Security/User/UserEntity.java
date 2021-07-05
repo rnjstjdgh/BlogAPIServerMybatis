@@ -1,5 +1,6 @@
 package nk.demo.BlogAPIServer.Security.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,12 +29,15 @@ public class UserEntity{
     private String 				email;
     private String 				password;
     private String 				role;
+	private LocalDateTime 		regDate;		//등록일자
+
 
     @Builder
-    public UserEntity(int userId, String email, String password, String role){
+    public UserEntity(int userId, String email, String password, String role, LocalDateTime regDate){
         this.userId = userId;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.regDate = regDate;
     }
 }

@@ -2,7 +2,7 @@ package nk.demo.BlogAPIServer.Security.Sign;
 
 import io.swagger.annotations.ApiParam;
 import nk.demo.BlogAPIServer.CustomException.CustomNullPointException;
-import nk.demo.BlogAPIServer.Security.User.UserDto;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +15,7 @@ import nk.demo.BlogAPIServer.Response.CommonResult;
 import nk.demo.BlogAPIServer.Response.ResponseService;
 import nk.demo.BlogAPIServer.Response.SingleResult;
 import nk.demo.BlogAPIServer.Security.JWT.JwtTokenProvider;
+import nk.demo.BlogAPIServer.Security.User.Dtos.UserDto;
 
 @Api(tags = { "2. 회원가입 & 로그인 API" })
 @RequiredArgsConstructor

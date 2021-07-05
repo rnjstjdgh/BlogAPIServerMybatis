@@ -1,24 +1,31 @@
-package nk.demo.BlogAPIServer.Security.User;
+package nk.demo.BlogAPIServer.Security.User.Dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nk.demo.BlogAPIServer.Security.User.UserEntity;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 
 @Getter @Setter
 public class UserDto implements UserDetails {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int 				userId;
     private String 				email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String 				password;
     private String 				role;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private LocalDateTime 		regDate;		//등록일자
+
 
     public UserEntity toEntity(){
         return UserEntity.builder()
@@ -26,15 +33,17 @@ public class UserDto implements UserDetails {
                             .email(email)
                             .password(password)
                             .role(role)
+                            .regDate(regDate)
                             .build();
     }
-
+    
     @Builder
-    public UserDto(int userId, String email, String password, String role){
+    public UserDto(int userId, String email, String password, String role, LocalDateTime regDate){
         this.userId = userId;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.regDate = regDate;
     }
 
 

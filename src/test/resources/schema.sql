@@ -16,5 +16,6 @@ CREATE TABLE `T_USER` (
 	`EMAIL` text NOT NULL,
 	`PASSWORD` varchar(100) NOT NULL,
 	`ROLE` varchar(100) NOT NULL,
+	`REG_DATE` datetime NOT NULL,
   	PRIMARY KEY (`USER_ID`)
 );

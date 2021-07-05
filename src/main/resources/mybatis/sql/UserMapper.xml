@@ -4,6 +4,47 @@
 <mapper
 	namespace="nk.demo.BlogAPIServer.Security.User.UserRepository">
 
+	<select id="getList"
+		parameterType="nk.demo.BlogAPIServer.Security.User.UserEntity"
+		resultType="nk.demo.BlogAPIServer.Security.User.UserEntity">
+		SELECT
+		U.USER_ID,
+		U.EMAIL,
+		U.PASSWORD,
+		U.ROLE,
+		U.REG_DATE
+		FROM T_USER U
+		ORDER BY U.REG_DATE DESC
+	</select>
+
+	<select id="get" parameterType="int"
+		resultType="nk.demo.BlogAPIServer.Security.User.UserEntity">
+		SELECT
+		U.USER_ID,
+		U.EMAIL,
+		U.PASSWORD,
+		U.ROLE,
+		U.REG_DATE
+		FROM T_USER U
+		WHERE U.USER_ID = #{userId}
+	</select>
+	
+	<update id="update"
+		parameterType="nk.demo.BlogAPIServer.Security.User.UserEntity">
+		UPDATE T_USER
+		SET
+		EMAIL = #{email},
+		PASSWORD = #{password},
+		ROLE = #{role}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM T_USER
+		WHERE
+		USER_ID = #{userId}
+	</delete>
+
 	<select id="getByEmail" parameterType="String"
 		resultType="nk.demo.BlogAPIServer.Security.User.UserEntity">
 		SELECT
@@ -23,13 +64,15 @@
 		(
 		EMAIL,
 		PASSWORD,
-		ROLE
+		ROLE,
+		REG_DATE
 		)
 		VALUES
 		(
 		#{email},
 		#{password},
-		#{role}
+		#{role},
+		NOW()
 		)
 	</insert>
 </mapper>

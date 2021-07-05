@@ -28,7 +28,7 @@ import nk.demo.BlogAPIServer.Response.SingleResult;
  * **/
 @RestController
 @RequestMapping("/posts")
-@Api(tags = "1. 게시판 API")
+@Api(tags = {"1. 게시판 API(사용자 권한)"})
 public class PostController {
 	
 	@Autowired
