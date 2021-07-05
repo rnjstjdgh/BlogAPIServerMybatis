@@ -40,4 +40,10 @@ public class ExceptionAdvice {
 	public CommonResult authenticationEntryPointException(HttpServletRequest request, AuthenticationEntryPointException ex) {
 	        return responseService.getFailResult(ex.getMessage());
 	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public CommonResult AccessDeniedException(HttpServletRequest request, AccessDeniedException ex) {
+	        return responseService.getFailResult(ex.getMessage());
+	}
 }

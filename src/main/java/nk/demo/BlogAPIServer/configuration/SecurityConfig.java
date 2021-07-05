@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
+import nk.demo.BlogAPIServer.Security.CustomAccessDeniedHandler;
 import nk.demo.BlogAPIServer.Security.CustomAuthenticationEntryPoint;
 import nk.demo.BlogAPIServer.Security.JWT.JwtAuthenticationFilter;
 import nk.demo.BlogAPIServer.Security.JWT.JwtTokenProvider;
@@ -37,6 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/signin", "/signup","/JWTException/**").permitAll() // 가입 및 인증 주소는 누구나 접근가능
 				.antMatchers("/users","/users/*").hasRole("ADMIN")
 				.anyRequest().hasAnyRole("USER", "ADMIN") // 그외 나머지 요청은 모두 인증된 회원(사용자 + 관리자)만 접근 가능
+				.and()
+	            .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
 				.and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 				.and().addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
