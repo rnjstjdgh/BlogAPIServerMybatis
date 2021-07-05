@@ -42,8 +42,10 @@ public class PostController {
 	 * @return
 	 * **/
 	@GetMapping("")
-	@ApiOperation(value = "게시글 목록 조회", 
-	notes = "전체 게시글 리스트를 반환합니다.")
+	@ApiOperation(value = "게시글 목록 조회", notes = "전체 게시글 리스트를 반환합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
+	})
 	public ListResult<PostDto> getList(){
 		return responseService.getListResult(postService.getList());
 	}
@@ -57,6 +59,7 @@ public class PostController {
 	@ApiOperation(value = "게시글 상세 조회",
 	notes = "게시물 번호에 해당하는 상세 정보를 조회할 수 있습니다.")
 	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header"),
 		@ApiImplicitParam(name = "postId",value = "게시물 번호", example = "1" )
 	})
 	public SingleResult<PostDto> get(@PathVariable int postId) {
@@ -69,8 +72,10 @@ public class PostController {
 	 * @return
 	 * **/
 	@PostMapping("")
-	@ApiOperation(value = "신규 게시글 등록", 
-	notes = "신규 게시글을 등록합니다.")
+	@ApiOperation(value = "신규 게시글 등록", notes = "신규 게시글을 등록합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
+	})
 	public SingleResult<Integer> save(@RequestBody BasicPostDto basicPostDto) {
 		return responseService.getSingleResult(postService.save(basicPostDto));
 	}
@@ -82,8 +87,10 @@ public class PostController {
 	 * **/
 	@PutMapping("/{postId}")
 	@ApiOperation(value = "기존 게시글 수정", 
-	notes = "기존 게시글을 수정합니다. 게시글 아이디는 path로 넘기고 나머지 정보를 json body로 넘겨야 합니다."
-			+ "게시글 등록 일자는 넘기면 안됩니다.")
+	notes = "기존 게시글을 수정합니다. 게시글 아이디는 path로 넘기고 나머지 정보를 json body로 넘겨야 합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
+	})
 	public SingleResult<Integer> update(@PathVariable int postId, @RequestBody BasicPostDto basicPostDto) {
 		return responseService.getSingleResult(postService.update(postId ,basicPostDto));
 	}
@@ -96,6 +103,9 @@ public class PostController {
 	@DeleteMapping("/{postId}")
 	@ApiOperation(value = "기존 게시글 삭제", 
 	notes = "기존 게시글을 삭제합니다. path로 삭제하고자 하는 게시글의 번호를 넘겨야 합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
+	})
 	public SingleResult<Integer> delete(@PathVariable int postId) {
 		return responseService.getSingleResult(postService.delete(postId));
 	}

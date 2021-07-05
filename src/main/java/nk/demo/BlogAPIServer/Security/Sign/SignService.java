@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class SignService {
 
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ResponseService responseService;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository 		userRepository;
+    private final JwtTokenProvider 		jwtTokenProvider;
+    private final ResponseService 		responseService;
+    private final PasswordEncoder 		passwordEncoder;
 
     public SingleResult<String> signin(String email, String password) {
         UserEntity findedUserEntity = userRepository.getByEmail(email);
@@ -30,7 +30,7 @@ public class SignService {
             throw new SignFailedException("login fail, check password");
 
         return responseService.getSingleResult(
-                jwtTokenProvider.createToken(String.valueOf(findedUserEntity.getUserId()), findedUserEntity.getRole()));
+                jwtTokenProvider.createToken(String.valueOf(findedUserEntity.getEmail()), findedUserEntity.getRole()));
     }
 
     public CommonResult signup(String email, String password) {

@@ -61,7 +61,9 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
  // Jwt 토큰에서 회원 구별 정보 추출
  public String getUserPk(String token) {
-     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+	 Claims obj = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+	 
+     return obj.getSubject();
  }
 
  // Request의 Header에서 token 파싱 : "X-AUTH-TOKEN: jwt토큰"
